@@ -1,8 +1,12 @@
 package PointerFactory
 
-const GlobalVersion string = "0.3.3"
-const GlobalDateUpdate string = "06-06-2024"
-const GlobalName string = "PointerFactory"
+const (
+	GlobalName       string = "PointerFactory"
+	GlobalDateUpdate string = "06-12-2024"
+	GlobalHash       string = "ce3d3973d10794da1f256ba98e4f2792bfe228a4"
 
-const NumBase = 36
-const YearPoint = 2024
+	GlobalVersion      string = "1.0.1"
+	GlobalVersionMajor string = "1"
+	GlobalVersionMinor uint16 = 0
+	GlobalVersionPatch uint16 = 1
+)
