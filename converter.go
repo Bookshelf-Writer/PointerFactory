@@ -1,28 +1,16 @@
 package PointerFactory
 
+import (
+	"strconv"
+)
+
 ////////////////////////////////////
 
 func NumToString(number uint64, base int32) string {
-	var result string
-	bb := uint64(base)
-
-	for number > 0 {
-		remainder := number % bb
-		result = string(chars[remainder]) + result
-		number /= bb
-	}
-
-	return result
+	return strconv.FormatUint(number, int(base))
 }
 
 func StringToNum(text string, base int32) uint64 {
-	var result uint64
-	bb := uint64(base)
-
-	for _, c := range text {
-		digit := uint64(charsMap[c])
-		result = result*bb + digit
-	}
-
-	return result
+	number, _ := strconv.ParseUint(text, int(base), 64)
+	return number
 }
