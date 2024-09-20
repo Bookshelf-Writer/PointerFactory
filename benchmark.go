@@ -30,6 +30,7 @@ func benchmarkChecksum(b *testing.B) {
 	str := strconv.Itoa(time.Now().Nanosecond())
 
 	b.StartTimer()
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		wp.CRC(str)
 	}
@@ -42,6 +43,7 @@ func benchmarkAdd(b *testing.B) {
 	defer crt.Close()
 
 	b.StartTimer()
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		for _, tag := range wp.TypeMAP {
 			crt.New(tag)
@@ -56,6 +58,7 @@ func benchmarkAddP(b *testing.B) {
 	defer crt.Close()
 
 	b.StartTimer()
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		var wg sync.WaitGroup
 		wg.Add(len(wp.TypeMAP))
@@ -84,6 +87,7 @@ func benchmarkAddPG(b *testing.B) {
 	wg.Add(len(wp.TypeMAP) * b.N)
 
 	b.StartTimer()
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		for _, tag := range wp.TypeMAP {
 			bufTag := tag
