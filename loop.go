@@ -17,6 +17,11 @@ func (obj *GlobalObj) loop() {
 	tickerUPD := time.NewTicker(time.Minute)
 	defer tickerUPD.Stop()
 
+	//
+
+	obj.isActive = true
+	defer func(obj *GlobalObj) { obj.isActive = false }(obj)
+
 	upd := func() {
 		obj.minute += 1
 
