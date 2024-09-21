@@ -1,15 +1,12 @@
 package PointerFactory
 
 const (
-	 GlobalName string = "PointerFactory"
-	 GlobalDateUpdate string = "06-12-2024"
-	 GlobalHash string = "4f5b194fc0d0716e31d1e76693dc385d12f4a9bb"
+	GlobalName       string = "PointerFactory"
+	GlobalDateUpdate string = "09-21-2024"
+	GlobalHash       string = "fc97e1f2e7ab56539fc6c079b14076513bb8b4ce"
 
-	 GlobalVersion string = "v1.1.0"
-	 GlobalVersionMajor string = "v1"
-	 GlobalVersionMinor uint16 = 1
-	 GlobalVersionPatch uint16 = 0
-
-	 NumBase = 36
-	 YearPoint = 2024
+	GlobalVersion      string = "v0.0.5"
+	GlobalVersionMajor string = "v0"
+	GlobalVersionMinor uint16 = 0
+	GlobalVersionPatch uint16 = 5
 )

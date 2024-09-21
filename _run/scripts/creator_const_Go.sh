@@ -41,10 +41,6 @@ echo -e "\t GlobalVersionMajor string = \"$VERSION_MAJOR\"" >> "$file_const"
 echo -e "\t GlobalVersionMinor uint16 = $VERSION_MINOR" >> "$file_const"
 echo -e "\t GlobalVersionPatch uint16 = $VERSION_PATCH" >> "$file_const"
 
-echo "" >> "$file_const"
-echo -e "\t NumBase = 36" >> "$file_const"
-echo -e "\t YearPoint = 2024" >> "$file_const"
-
 echo ")" >> "$file_const"
 
 exit 0

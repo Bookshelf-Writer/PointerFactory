@@ -1,60 +1,44 @@
 package PointerFactory
 
-import (
-	"errors"
-	"strconv"
-)
+////////////////////////////////////
 
-/* Получение указателя из строки */
-func (w *WrapperObj) Decode(str string) (*PointerObj, error) {
-	retObj := PointerObj{}
-	bufLen := len(str)
-	var err error
-
-	//проверка на максимальную длину
-	if bufLen > 16 {
-		return &retObj, errors.New("Too long")
+func (obj *GlobalObj) IsValid(uid string) error {
+	if !obj.isActive {
+		return ErrNotActive
 	}
 
-	//проверка на минимальную длину
-	if bufLen < 5 {
-		return &retObj, errors.New("Too short")
+	size := len([]rune(uid))
+	if size <= 5 {
+		return ErrValidLength
 	}
 
-	// Получение типа
-	retObj.t = wp.ParseType([]rune(str[0:1])[0])
-	if retObj.t == TypeNone {
-		return &retObj, errors.New("Unknown type [" + str[0:1] + "]")
+	group := rune(uid[0])
+	_, ok := obj.groups[group]
+	if !ok {
+		return ErrValidGroup
 	}
 
-	//проверка контрольной суммы
-	bufCRC := str[bufLen-1:]
-	if bufCRC != wp.CRC(str[:bufLen-1]) {
-		return &retObj, errors.New("Checksum verification error")
+	c1, c2 := rune(uid[size-2:][0]), rune(uid[size-1:][0])
+	r1, r2 := CRC(uid[:size-2], obj.base)
+	if c1 != r1 || c2 != r2 {
+		return ErrValidCRC
 	}
 
-	//Получение сервера
-	bufServer, err := strconv.ParseUint(str[1:3], wp.NumBase, 16)
-	if err != nil {
-		return &retObj, err
-	}
-	retObj.s = uint16(bufServer)
-
-	//получение указателя
-	retObj.p, err = strconv.ParseUint(str[3:bufLen-1], wp.NumBase, 64)
-	if err != nil {
-		return &retObj, err
-	}
-
-	return &retObj, nil
+	return nil
 }
 
-/* Формирование строки из указателя */
-func (w *WrapperObj) Encode(point *PointerObj) string {
-	return point.String()
-}
+////
 
-/* Формирование строки из указателя десятичным числом (без CRC) */
-func (w *WrapperObj) EncodeINT(point *PointerObj) string {
-	return point.StringINT()
+func (obj *GlobalObj) New(group rune) (string, error) {
+	if !obj.isActive {
+		return "", ErrNotActive
+	}
+
+	_, ok := obj.groups[group]
+	if !ok {
+		return "", ErrGroupNotFound
+	}
+
+	uid := obj.newUID(group, obj.sendChan(group))
+	return uid.String(obj.base), nil
 }

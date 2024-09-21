@@ -1,89 +1,96 @@
 package PointerFactory
 
 import (
-	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
+	"math/rand"
 	"testing"
 	"time"
 )
 
-const TypeTest TypeTag = 44
+////////////////////////////////////
 
-func init() {
-	wp.TypeMAP['s'] = TypeTest
-	wp.TypeMAP['1'] = 100
-	wp.TypeMAP['2'] = 101
-	wp.TypeMAP['3'] = 102
-	wp.TypeMAP['4'] = 103
-	wp.TypeMAP['5'] = 104
-	wp.TypeMAP['6'] = 105
-	wp.TypeMAP['7'] = 106
-	wp.TypeMAP['8'] = 107
-	wp.TypeMAP['9'] = 108
+var (
+	groups = []rune{
+		'u',
+		'r',
+	}
+	startPoint        = time.Date(2000, 1, 1, 1, 1, 1, 1, time.UTC)
+	base       int32  = 36
+	cluster    uint16 = 0
+)
+
+////////
+
+func TestBase(t *testing.T) {
+	num := rand.Uint64()
+	uid := NumToString(num, base)
+
+	if StringToNum(uid, base) != num {
+		t.Error("Invalid Methods convert")
+	}
 }
 
-//////////////////////////////////////////////////////////`
+////
 
-func TestGlobal(t *testing.T) {
-	wp.StartTests(t)
+func TestNew(t *testing.T) {
+	uid, err := New(groups, cluster, base, startPoint)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer uid.Close()
+
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	_, err = uid.New(groups[0])
+	if err != nil {
+		t.Error(err)
+	}
 }
 
-func BenchmarkGlobal(b *testing.B) {
-	wp.StartBenchmarks(b)
+func TestValid(t *testing.T) {
+
+	uid, err := New(groups, cluster, base, startPoint)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer uid.Close()
+
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	err = uid.IsValid("u085fb0j1")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = uid.IsValid("r085fb0gg")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = uid.IsValid("g085fb055")
+	if err == nil {
+		t.Error("Invalid Valid")
+	}
 }
 
-// TestCreateMin Прогон теста на сохранение уникальности через минуту
-func TestCreateMin(t *testing.T) {
-	t.SkipNow()
+////
 
-	period := time.Duration(10 * time.Second)
-	timeWork := time.Duration(1*time.Minute + 30*time.Second)
+func BenchmarkNew(b *testing.B) {
+	uid, err := New(groups, cluster, base, startPoint)
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer uid.Close()
 
-	//Инициализация метода фабрики указателей
-	crt := wp.InitCreator(888)
-	defer crt.Close()
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
+	}
 
-	//Внутренние переменные для валидации теста или перехвата STOP
-	bufID := []string{}
-	closeCh := make(chan os.Signal, 1)
-	signal.Notify(closeCh, os.Interrupt, syscall.SIGTERM)
-
-	//Инициализация периода и времени работы
-	ticker := time.NewTicker(period)
-	endTime := time.Now().Add(timeWork)
-	defer ticker.Stop()
-
-	for {
-		select {
-
-		//Тик по периоду
-		case timeN := <-ticker.C:
-			id := crt.New(TypeNone)
-			bufID = append(bufID, id.String())
-			fmt.Println(timeN.Minute(), timeN.Second(), "\t|\t", id.String(), id.Uint())
-
-		// Финальный перехват
-		case <-time.After(time.Until(endTime)):
-			mapID := map[string]int{}
-			for _, id := range bufID {
-				_, status := mapID[id]
-				if !status {
-					mapID[id] = 1
-				} else {
-					mapID[id] += 1
-					t.Error(fmt.Errorf("Dublicate ID: %s ", id))
-				}
-			}
-			return
-
-		//Перехват команды остановки
-		case <-closeCh:
-			ticker.Stop()
-			t.Errorf("BREACK")
-			return
-
-		}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		uid.New(groups[0])
 	}
 }
