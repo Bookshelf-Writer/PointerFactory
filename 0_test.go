@@ -1,32 +1,96 @@
 package PointerFactory
 
 import (
-	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 )
 
-func TestName(t *testing.T) {
-	groups := []rune{
-		'a',
-		'3',
-	}
+////////////////////////////////////
 
-	obj, err := New(groups, 0, 36, time.Date(2000, 1, 1, 1, 1, 1, 1, time.UTC))
+var (
+	groups = []rune{
+		'u',
+		'r',
+	}
+	startPoint        = time.Date(2000, 1, 1, 1, 1, 1, 1, time.UTC)
+	base       int32  = 36
+	cluster    uint16 = 0
+)
+
+////////
+
+func TestBase(t *testing.T) {
+	num := rand.Uint64()
+	uid := NumToString(num, base)
+
+	if StringToNum(uid, base) != num {
+		t.Error("Invalid Methods convert")
+	}
+}
+
+////
+
+func TestNew(t *testing.T) {
+	uid, err := New(groups, cluster, base, startPoint)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(obj)
+	defer uid.Close()
 
-	for i := 0; i < 10; i++ {
-		uid, e := obj.New(groups[0])
-		fmt.Println("GENERATE\t", uid, e)
-		if e == nil {
-			fmt.Println("VALID\t", obj.IsValid(uid))
-		}
-
-		time.Sleep(10 * time.Second)
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
 	}
 
-	obj.Close()
+	_, err = uid.New(groups[0])
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestValid(t *testing.T) {
+
+	uid, err := New(groups, cluster, base, startPoint)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer uid.Close()
+
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	err = uid.IsValid("u085fb0j1")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = uid.IsValid("r085fb0gg")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = uid.IsValid("g085fb055")
+	if err == nil {
+		t.Error("Invalid Valid")
+	}
+}
+
+////
+
+func BenchmarkNew(b *testing.B) {
+	uid, err := New(groups, cluster, base, startPoint)
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer uid.Close()
+
+	for !uid.IsActive() {
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		uid.New(groups[0])
+	}
 }

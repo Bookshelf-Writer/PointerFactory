@@ -19,7 +19,6 @@ func (obj *GlobalObj) loop() {
 
 	//
 
-	obj.isActive = true
 	defer func(obj *GlobalObj) { obj.isActive = false }(obj)
 
 	upd := func() {
@@ -33,6 +32,8 @@ func (obj *GlobalObj) loop() {
 	//
 
 	for {
+		obj.isActive = true
+
 		select {
 		case <-tickerStart.C:
 			tickerUPD = time.NewTicker(time.Minute)
