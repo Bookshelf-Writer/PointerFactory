@@ -60,12 +60,12 @@ func TestValid(t *testing.T) {
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	err = uid.IsValid("u085fb0j1")
+	err = uid.IsValid("u07qpgy0ya")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = uid.IsValid("r085fb0gg")
+	err = uid.IsValid("r07qpgy0v7")
 	if err != nil {
 		t.Error(err)
 	}

@@ -44,8 +44,8 @@ newUserID, _ := uid.New(userGroup)
 newRegID, _ := uid.New(regGroup)
 newCommentID, _ := uid.New(commentGroup)
 
-fmt.Println(newUserID, newRegID, newCommentID) //Выведет: u085fb0j1 r085fb0gg g085fb055
-fmt.Println(uid.IsValid(newUserID)) //Вернет nil так как указатель полностью валиден
+fmt.Println(newUserID, newRegID) //Выведет: u07qpgy0ya r07qpgy0v7
+fmt.Println(uid.IsValid(newCommentID)) //Вернет nil так как указатель полностью валиден
 uid.Close()
 ```
 

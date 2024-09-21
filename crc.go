@@ -13,5 +13,5 @@ func CRC(text string, base int32) (rune, rune) {
 		sum += char
 	}
 
-	return chars[sum%base], chars[(sum % (base / 2))]
+	return chars[sum%base], chars[(sum % (base / 3))]
 }
