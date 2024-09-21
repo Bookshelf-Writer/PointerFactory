@@ -5,15 +5,15 @@ import "errors"
 ////////////////////////////////////
 
 var (
-	ErrEmpyGroups          = errors.New("нет заданых групп")
-	ErrInvalidBase         = errors.New("недопустимый размер базы")
-	ErrInvalidStartPoint   = errors.New("startPoint указано для будущего")
-	ErrInvalidGroupElement = errors.New("один из элементов группы не есть валидным")
+	ErrEmpyGroups          = errors.New("no groups defined")
+	ErrInvalidBase         = errors.New("invalid radix size")
+	ErrInvalidStartPoint   = errors.New("startPoint is specified for the future")
+	ErrInvalidGroupElement = errors.New("one of the group elements is not valid")
 
-	ErrNotActive     = errors.New("экземпляр не запущен")
-	ErrGroupNotFound = errors.New("такая группа не найдена")
+	ErrNotActive     = errors.New("factory is not running")
+	ErrGroupNotFound = errors.New("no such group found")
 
-	ErrValidLength = errors.New("Недопустимая длинна")
-	ErrValidGroup  = errors.New("недопустимая группа")
-	ErrValidCRC    = errors.New("CRC не сошелся")
+	ErrValidLength = errors.New("invalid length")
+	ErrValidGroup  = errors.New("invalid group")
+	ErrValidCRC    = errors.New("invalid CRC")
 )

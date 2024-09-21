@@ -32,8 +32,6 @@ func (obj *GlobalObj) loop() {
 	//
 
 	for {
-		obj.isActive = true
-
 		select {
 		case <-tickerStart.C:
 			tickerUPD = time.NewTicker(time.Minute)
@@ -49,6 +47,9 @@ func (obj *GlobalObj) loop() {
 
 		case <-obj.ctx.Done():
 			return
+
+		default:
+			obj.isActive = true
 		}
 	}
 }
