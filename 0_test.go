@@ -38,10 +38,6 @@ func TestNew(t *testing.T) {
 	}
 	defer uid.Close()
 
-	for !uid.IsActive() {
-		time.Sleep(10 * time.Millisecond)
-	}
-
 	_, err = uid.New(groups[0])
 	if err != nil {
 		t.Error(err)
@@ -55,10 +51,6 @@ func TestValid(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer uid.Close()
-
-	for !uid.IsActive() {
-		time.Sleep(10 * time.Millisecond)
-	}
 
 	err = uid.IsValid("u07qpgy0ya")
 	if err != nil {
@@ -85,12 +77,9 @@ func BenchmarkNew(b *testing.B) {
 	}
 	defer uid.Close()
 
-	for !uid.IsActive() {
-		time.Sleep(10 * time.Millisecond)
-	}
-
-	b.ResetTimer()
+	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		uid.New(groups[0])
 	}
+	b.StopTimer()
 }

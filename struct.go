@@ -13,11 +13,10 @@ type GlobalObj struct {
 	cluster    uint16
 	base       int32
 
-	isActive  bool
-	minute    uint32
-	groups    map[rune]uint32
-	groupsBuf []rune
-	ch        chan *chObj
+	isActive bool
+	minute   uint32
+	groups   map[rune]uint32
+	ch       chan *chObj
 
 	ctx       context.Context
 	ctxCancel context.CancelFunc
@@ -50,7 +49,6 @@ func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*Glob
 		}
 
 		obj.groups[group] = 0
-		obj.groupsBuf = append(obj.groupsBuf, group)
 	}
 
 	obj.ctx, obj.ctxCancel = context.WithCancel(context.Background())
@@ -58,6 +56,9 @@ func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*Glob
 	obj.minute = uint32(duration.Minutes())
 
 	go obj.loop()
+	for !obj.isActive {
+		time.Sleep(10 * time.Millisecond)
+	}
 
 	return &obj, nil
 }

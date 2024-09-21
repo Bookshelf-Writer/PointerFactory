@@ -1,39 +1,19 @@
 package PointerFactory
 
-import (
-	"bytes"
-)
+import "bytes"
 
 ////////////////////////////////////
 
-type UidObj struct {
-	Group   rune
-	Cluster uint16
-	Minute  uint32
-	Offset  uint32
-}
-
-func (obj *GlobalObj) newUID(group rune, offset uint32) *UidObj {
-	return &UidObj{
-		Group:   group,
-		Cluster: obj.cluster,
-		Minute:  obj.minute,
-		Offset:  offset,
-	}
-}
-
-//
-
-func (uid *UidObj) String(base int32) string {
+func (obj *GlobalObj) newUID(group rune, offset uint32) string {
 	var buf bytes.Buffer
 
-	buf.WriteRune(uid.Group)
+	buf.WriteRune(group)
 
-	buf.WriteString(NumToString(uint64(uid.Cluster), base))
-	buf.WriteString(NumToString(uint64(uid.Minute), base))
-	buf.WriteString(NumToString(uint64(uid.Offset), base))
+	buf.WriteString(NumToString(uint64(obj.cluster), obj.base))
+	buf.WriteString(NumToString(uint64(obj.minute), obj.base))
+	buf.WriteString(NumToString(uint64(offset), obj.base))
 
-	crc1, crc2 := CRC(buf.String(), base)
+	crc1, crc2 := CRC(buf.String(), obj.base)
 	buf.WriteRune(crc1)
 	buf.WriteRune(crc2)
 

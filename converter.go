@@ -1,8 +1,6 @@
 package PointerFactory
 
-import (
-	"strconv"
-)
+import "strconv"
 
 ////////////////////////////////////
 

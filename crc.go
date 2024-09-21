@@ -6,12 +6,13 @@ var chars = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
 
 //
 
-func CRC(text string, base int32) (rune, rune) {
-	sum := int32(1)
+func CRC(val string, base int32) (rune, rune) {
+	sum := uint64(1)
+	b := uint64(base)
 
-	for _, char := range text {
-		sum += char
+	for _, char := range val {
+		sum += uint64(char)
 	}
 
-	return chars[sum%base], chars[(sum % (base / 3))]
+	return chars[sum%b], chars[(sum % (b / 3))]
 }

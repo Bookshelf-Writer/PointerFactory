@@ -11,14 +11,12 @@ type chObj struct {
 
 func (obj *GlobalObj) sendChan(group rune) uint32 {
 	ch := make(chan uint32)
+	defer close(ch)
 
 	obj.ch <- &chObj{
 		group:     group,
 		retOffset: ch,
 	}
 
-	offset := <-ch
-	close(ch)
-
-	return offset
+	return <-ch
 }

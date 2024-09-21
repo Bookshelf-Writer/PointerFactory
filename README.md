@@ -37,9 +37,6 @@ if err != nil {
 panic(err)
 }
 
-//Ждем пока фабрика запустится
-for !uid.IsActive() {time.Sleep(10 * time.Millisecond)} 
-
 newUserID, _ := uid.New(userGroup)
 newRegID, _ := uid.New(regGroup)
 newCommentID, _ := uid.New(commentGroup)

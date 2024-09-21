@@ -24,8 +24,8 @@ func (obj *GlobalObj) loop() {
 	upd := func() {
 		obj.minute += 1
 
-		for _, group := range obj.groupsBuf {
-			obj.groups[group] = 0
+		for r, _ := range obj.groups {
+			obj.groups[r] = 0
 		}
 	}
 
