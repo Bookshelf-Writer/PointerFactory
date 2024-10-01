@@ -1,10 +1,18 @@
 package PointerFactory
 
+import "regexp"
+
 ////////////////////////////////////
+
+var ValidateRegExp = regexp.MustCompile("^[a-z0-9]+$")
 
 func (obj *GlobalObj) IsValid(uid string) error {
 	if !obj.isActive {
 		return ErrNotActive
+	}
+
+	if !ValidateRegExp.MatchString(uid) {
+		return ErrInvalidChars
 	}
 
 	buf := []rune(uid)

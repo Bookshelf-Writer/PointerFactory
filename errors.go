@@ -11,6 +11,7 @@ var (
 	ErrInvalidGroupElement = errors.New("one of the group elements is not valid")
 
 	ErrNotActive     = errors.New("factory is not running")
+	ErrInvalidChars  = errors.New("uid has invalid characters")
 	ErrGroupNotFound = errors.New("no such group found")
 
 	ErrValidLength = errors.New("invalid length")
