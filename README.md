@@ -9,20 +9,20 @@
 
 
 # PointerFactory
-Библиотека для генерации/валидации уникальных UID в рамках кластера
+Library for generating/validating unique UIDs within a cluster
 
 ---
 
-### Генератор
+### Generator
 
-- Привязка происходит к дате, точка отсчета задается при инициализации
-- Допустимое количество параллельных нод для сохранения уникальности в рамках группы - 65535
-- В рамках группы, в минуту можно получить до 4294967295 уникальных указателей
-- Валидация многоступенчатая, возврат ошибки при первом же вхождении
-- Имеется контрольная сумма (состоит из двух символов во избежания коллизий)
-- Максимально допустимый размер системы счисления 36. Минимальный - 2.
+- Binding occurs to the date, the reference point is set during initialization
+- The allowed number of parallel nodes to maintain uniqueness within the group is 65535
+- Within a group, you can receive up to 4294967295 unique pointers per minute
+- Multi-stage validation, returning an error at the first occurrence
+- There is a checksum (consists of two characters to avoid collisions)
+- The maximum allowable size of the number system is 36. The minimum is 2.
 
-#### Пример использования
+#### Usage example
 
 ```Go
 userGroup := 'u'
@@ -32,7 +32,7 @@ commentGroup := 'g'
 groups := []rune{userGroup, regGroup, commentGroup}
 startTime := time.Date(2024, 1, 1, 1, 1, 0, 0, time.UTC)
 
-uid, err := New(groups, 0, 36, startTime)   //Инициализируем фабрику
+uid, err := New(groups, 0, 36, startTime)   //Initialize the factory
 if err != nil {
 panic(err)
 }
@@ -41,8 +41,8 @@ newUserID, _ := uid.New(userGroup)
 newRegID, _ := uid.New(regGroup)
 newCommentID, _ := uid.New(commentGroup)
 
-fmt.Println(newUserID, newRegID) //Выведет: u07qpgy0ya r07qpgy0v7
-fmt.Println(uid.IsValid(newCommentID)) //Вернет nil так как указатель полностью валиден
+fmt.Println(newUserID, newRegID) //Outputs: u09vnb0l9 r09vnb0i6
+fmt.Println(uid.IsValid(newCommentID)) //Returns nil since the pointer is valid
 uid.Close()
 ```
 
