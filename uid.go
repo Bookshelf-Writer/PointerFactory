@@ -20,5 +20,6 @@ func (obj *GlobalObj) newUID(group rune, offset *atomic.Uint32) string {
 	buf.WriteRune(crc1)
 	buf.WriteRune(crc2)
 
+	offset.Add(1)
 	return buf.String()
 }

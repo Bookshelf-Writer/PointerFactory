@@ -20,7 +20,7 @@ func (obj *GlobalObj) loop() {
 	defer func(obj *GlobalObj) { obj.isActive = false }(obj)
 
 	upd := func() {
-		obj.minute.Add(0)
+		obj.minute.Add(1)
 
 		for r, _ := range obj.groups {
 			obj.groups[r].Store(0)
