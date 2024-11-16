@@ -1,17 +1,20 @@
 package PointerFactory
 
-import "bytes"
+import (
+	"bytes"
+	"sync/atomic"
+)
 
 ////////////////////////////////////
 
-func (obj *GlobalObj) newUID(group rune, offset uint32) string {
+func (obj *GlobalObj) newUID(group rune, offset *atomic.Uint32) string {
 	var buf bytes.Buffer
 
 	buf.WriteRune(group)
 
 	buf.WriteString(NumToString(uint64(obj.cluster), obj.base))
-	buf.WriteString(NumToString(uint64(obj.minute), obj.base))
-	buf.WriteString(NumToString(uint64(offset), obj.base))
+	buf.WriteString(NumToString(uint64(obj.minute.Load()), obj.base))
+	buf.WriteString(NumToString(uint64(offset.Load()), obj.base))
 
 	crc1, crc2 := CRC(buf.String(), obj.base)
 	buf.WriteRune(crc1)

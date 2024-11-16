@@ -46,5 +46,9 @@ func (obj *GlobalObj) New(group rune) (string, error) {
 		return "", ErrGroupNotFound
 	}
 
-	return obj.newUID(group, obj.sendChan(group)), nil
+	return obj.newUID(group, obj.groups[group]), nil
+}
+
+func (obj *GlobalObj) NewUnsafe(group rune) string {
+	return obj.newUID(group, obj.groups[group])
 }

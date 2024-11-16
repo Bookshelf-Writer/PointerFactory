@@ -3,6 +3,7 @@ package PointerFactory
 import (
 	"context"
 	"regexp"
+	"sync/atomic"
 	"time"
 )
 
@@ -14,9 +15,8 @@ type GlobalObj struct {
 	base       int32
 
 	isActive bool
-	minute   uint32
-	groups   map[rune]uint32
-	ch       chan *chObj
+	minute   atomic.Uint32
+	groups   map[rune]*atomic.Uint32
 
 	ctx       context.Context
 	ctxCancel context.CancelFunc
@@ -40,7 +40,7 @@ func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*Glob
 	obj.cluster = cluster
 	obj.base = base
 
-	obj.groups = make(map[rune]uint32)
+	obj.groups = make(map[rune]*atomic.Uint32)
 
 	for _, group := range groups {
 		match, _ := regexp.MatchString("[a-z0-9]", string(group))
@@ -48,12 +48,12 @@ func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*Glob
 			return nil, ErrInvalidGroupElement
 		}
 
-		obj.groups[group] = 0
+		obj.groups[group] = &atomic.Uint32{}
 	}
 
 	obj.ctx, obj.ctxCancel = context.WithCancel(context.Background())
 	duration := obj.timeNow().Sub(obj.startPoint)
-	obj.minute = uint32(duration.Minutes())
+	obj.minute.Store(uint32(duration.Minutes()))
 
 	go obj.loop()
 	for !obj.isActive {

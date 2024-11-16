@@ -7,8 +7,6 @@ import (
 ////////////////////////////////////
 
 func (obj *GlobalObj) loop() {
-	obj.ch = make(chan *chObj, 1)
-	defer close(obj.ch)
 
 	secT := 60 - time.Now().Second() - obj.timeNow().Second()
 	tickerStart := time.NewTicker(time.Second * time.Duration(secT))
@@ -22,10 +20,10 @@ func (obj *GlobalObj) loop() {
 	defer func(obj *GlobalObj) { obj.isActive = false }(obj)
 
 	upd := func() {
-		obj.minute += 1
+		obj.minute.Add(0)
 
 		for r, _ := range obj.groups {
-			obj.groups[r] = 0
+			obj.groups[r].Store(0)
 		}
 	}
 
@@ -40,10 +38,6 @@ func (obj *GlobalObj) loop() {
 
 		case <-tickerUPD.C:
 			upd()
-
-		case pointer := <-obj.ch:
-			pointer.retOffset <- obj.groups[pointer.group]
-			obj.groups[pointer.group]++
 
 		case <-obj.ctx.Done():
 			return
