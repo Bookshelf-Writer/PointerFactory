@@ -42,13 +42,10 @@ func (obj *GlobalObj) New(group rune) (string, error) {
 		return "", ErrNotActive
 	}
 
-	if _, ok := obj.groups[group]; !ok {
+	offset, ok := obj.groups[group]
+	if !ok {
 		return "", ErrGroupNotFound
 	}
 
-	return obj.newUID(group, obj.groups[group]), nil
-}
-
-func (obj *GlobalObj) NewUnsafe(group rune) string {
-	return obj.newUID(group, obj.groups[group])
+	return obj.newUID(group, offset), nil
 }
