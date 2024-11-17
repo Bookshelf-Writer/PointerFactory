@@ -12,7 +12,7 @@ import (
 type GlobalObj struct {
 	startPoint time.Time
 	cluster    uint16
-	base       int32
+	base       int
 
 	isActive bool
 	minute   atomic.Uint32
@@ -24,13 +24,17 @@ type GlobalObj struct {
 
 ////
 
-func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*GlobalObj, error) {
+func New(groups []rune, cluster uint16, base uint8, startPoint time.Time) (*GlobalObj, error) {
 	if len(groups) == 0 {
 		return nil, ErrEmpyGroups
 	}
 	if base < 2 || base > 36 {
 		return nil, ErrInvalidBase
 	}
+	if base%2 != 0 {
+		return nil, ErrInvalidBase
+	}
+
 	if startPoint.Unix() >= time.Now().Unix() {
 		return nil, ErrInvalidStartPoint
 	}
@@ -38,7 +42,7 @@ func New(groups []rune, cluster uint16, base int32, startPoint time.Time) (*Glob
 	obj := GlobalObj{}
 	obj.startPoint = startPoint
 	obj.cluster = cluster
-	obj.base = base
+	obj.base = int(base)
 
 	obj.groups = make(map[rune]*atomic.Uint32)
 

@@ -27,7 +27,7 @@ func (obj *GlobalObj) IsValid(uid string) error {
 	}
 
 	c1, c2 := buf[size-2:][0], buf[size-1:][0]
-	r1, r2 := CRC(string(buf[:size-2]), obj.base)
+	r1, r2 := obj.CRC(string(buf[:size-2]))
 	if c1 != r1 || c2 != r2 {
 		return ErrValidCRC
 	}

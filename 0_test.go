@@ -14,7 +14,7 @@ var (
 		'r',
 	}
 	startPoint        = time.Date(2000, 1, 1, 1, 1, 1, 1, time.UTC)
-	base       int32  = 36
+	base       uint8  = 36
 	cluster    uint16 = 0
 )
 
@@ -22,9 +22,9 @@ var (
 
 func TestBase(t *testing.T) {
 	num := rand.Uint64()
-	uid := NumToString(num, base)
+	uid := NumToString(num)
 
-	if StringToNum(uid, base) != num {
+	if StringToNum(uid) != num {
 		t.Error("Invalid Methods convert")
 	}
 }
@@ -68,18 +68,58 @@ func TestValid(t *testing.T) {
 	}
 }
 
+func TestBigDate(t *testing.T) {
+	uid, err := New(groups, cluster, base, time.Date(-2000, 1, 1, 1, 1, 1, 1, time.UTC))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer uid.Close()
+
+	nn, err := uid.New(groups[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n := uid.StringToNum(nn)
+	if uid.NumToString(n) != nn {
+		t.Error("Invalid BigDate")
+	}
+}
+
 ////
 
-func BenchmarkNew(b *testing.B) {
-	uid, err := New(groups, cluster, base, startPoint)
+func BenchmarkGlobal(b *testing.B) {
+	uid, err := New(groups, cluster, base, time.Date(-2000, 1, 1, 1, 1, 1, 1, time.UTC))
 	if err != nil {
 		b.Fatal(err)
 	}
 	defer uid.Close()
 
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		uid.New(groups[0])
+	nn, err := uid.New(groups[0])
+	if err != nil {
+		b.Fatal(err)
 	}
-	b.StopTimer()
+	x := StringToNum(nn)
+
+	//
+
+	b.Run("New", func(bx *testing.B) {
+		for i := 0; i < bx.N; i++ {
+			uid.New(groups[0])
+		}
+	})
+
+	//
+
+	b.Run("ConvertToNum", func(bx *testing.B) {
+		for i := 0; i < bx.N; i++ {
+			StringToNum(nn)
+		}
+	})
+
+	b.Run("ConvertToString", func(bx *testing.B) {
+		for i := 0; i < bx.N; i++ {
+			NumToString(x)
+		}
+	})
 }

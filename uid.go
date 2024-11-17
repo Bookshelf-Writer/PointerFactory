@@ -12,11 +12,11 @@ func (obj *GlobalObj) newUID(group rune, offset *atomic.Uint32) string {
 
 	buf.WriteRune(group)
 
-	buf.WriteString(NumToString(uint64(obj.cluster), obj.base))
-	buf.WriteString(NumToString(uint64(obj.minute.Load()), obj.base))
-	buf.WriteString(NumToString(uint64(offset.Load()), obj.base))
+	buf.WriteString(obj.NumToString(uint64(obj.cluster)))
+	buf.WriteString(obj.NumToString(uint64(obj.minute.Load())))
+	buf.WriteString(obj.NumToString(uint64(offset.Load())))
 
-	crc1, crc2 := CRC(buf.String(), obj.base)
+	crc1, crc2 := obj.CRC(buf.String())
 	buf.WriteRune(crc1)
 	buf.WriteRune(crc2)
 
