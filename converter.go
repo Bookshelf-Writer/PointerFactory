@@ -4,7 +4,8 @@ import (
 	"math"
 )
 
-////////////////////////////////////
+// //////////////////////////////////
+const digits = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 func parseUint(s string, base int) uint64 {
 	if s == "" {
@@ -12,7 +13,6 @@ func parseUint(s string, base int) uint64 {
 	}
 
 	cutoff := math.MaxUint64/uint64(base) + 1
-	maxVal := uint64(1)<<64 - 1
 
 	var n uint64
 	for _, c := range []byte(s) {
@@ -31,13 +31,13 @@ func parseUint(s string, base int) uint64 {
 		}
 
 		if n >= cutoff {
-			return maxVal
+			return 0
 		}
 		n *= uint64(base)
 
 		n1 := n + uint64(d)
-		if n1 < n || n1 > maxVal {
-			return maxVal
+		if n1 < n || n1 > math.MaxUint64 {
+			return 0
 		}
 		n = n1
 	}
@@ -74,7 +74,7 @@ func StringToNum(text string) uint64 {
 	return parseUint(text, 36)
 }
 
-////
+//
 
 func (obj *GlobalObj) NumToString(id uint64) string {
 	return formatUint(id, obj.base)

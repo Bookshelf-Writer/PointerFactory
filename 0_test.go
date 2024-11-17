@@ -52,12 +52,12 @@ func TestValid(t *testing.T) {
 	}
 	defer uid.Close()
 
-	err = uid.IsValid("u07qpgy0ya")
+	err = uid.IsValid("u07sgxy008")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = uid.IsValid("r07qpgy0v7")
+	err = uid.IsValid("r07sgxy011")
 	if err != nil {
 		t.Error(err)
 	}

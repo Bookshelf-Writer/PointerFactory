@@ -2,8 +2,6 @@ package PointerFactory
 
 ////////////////////////////////////
 
-const digits = "0123456789abcdefghijklmnopqrstuvwxyz"
-
 var chars = []rune(digits)
 
 //
