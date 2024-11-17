@@ -2,7 +2,9 @@ package PointerFactory
 
 ////////////////////////////////////
 
-var chars = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
+const digits = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+var chars = []rune(digits)
 
 //
 
