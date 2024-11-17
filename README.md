@@ -11,6 +11,12 @@
 # PointerFactory
 Library for generating/validating unique UIDs within a cluster
 
+## INSTALL
+
+```bash
+go get -u github.com/Bookshelf-Writer/PointerFactory
+```
+
 ---
 
 ### Generator
