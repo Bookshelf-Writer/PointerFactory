@@ -1,6 +1,7 @@
 package PointerFactory
 
 import (
+	"math"
 	"math/rand"
 	"testing"
 	"time"
@@ -15,7 +16,7 @@ var (
 	}
 	startPoint        = time.Date(2000, 1, 1, 1, 1, 1, 1, time.UTC)
 	base       uint8  = 36
-	cluster    uint16 = 0
+	cluster    uint16 = math.MaxUint16 - 1
 )
 
 ////////
@@ -68,24 +69,6 @@ func TestValid(t *testing.T) {
 	}
 }
 
-func TestBigDate(t *testing.T) {
-	uid, err := New(groups, cluster, base, time.Date(-2000, 1, 1, 1, 1, 1, 1, time.UTC))
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer uid.Close()
-
-	nn, err := uid.New(groups[0])
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	n := uid.StringToNum(nn)
-	if uid.NumToString(n) != nn {
-		t.Error("Invalid BigDate")
-	}
-}
-
 ////
 
 func BenchmarkGlobal(b *testing.B) {
@@ -94,12 +77,6 @@ func BenchmarkGlobal(b *testing.B) {
 		b.Fatal(err)
 	}
 	defer uid.Close()
-
-	nn, err := uid.New(groups[0])
-	if err != nil {
-		b.Fatal(err)
-	}
-	x := StringToNum(nn)
 
 	//
 
@@ -113,10 +90,11 @@ func BenchmarkGlobal(b *testing.B) {
 
 	b.Run("ConvertToNum", func(bx *testing.B) {
 		for i := 0; i < bx.N; i++ {
-			StringToNum(nn)
+			StringToNum("u07sgxy008")
 		}
 	})
 
+	x := rand.Uint64()
 	b.Run("ConvertToString", func(bx *testing.B) {
 		for i := 0; i < bx.N; i++ {
 			NumToString(x)

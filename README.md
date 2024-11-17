@@ -22,6 +22,8 @@ Library for generating/validating unique UIDs within a cluster
 - There is a checksum (consists of two characters to avoid collisions)
 - The maximum allowable size of the number system is 36. The minimum is 2.
 
+The maximum length of the generated string does not exceed 20 characters
+
 #### Usage example
 
 ```Go
@@ -49,22 +51,6 @@ uid.Close()
 ---
 
 ---
-
-### Optimization
-
-Before:
-```
-//BenchmarkGlobal/New-8         	 		2400810	       628.7 ns/op	      96 B/op	       4 allocs/op
-//BenchmarkGlobal/ConvertToNum-8         	37856714	   29.27 ns/op	       0 B/op	       0 allocs/op
-//BenchmarkGlobal/ConvertToString-8      	7999920	       147.3 ns/op	      16 B/op	       1 allocs/op
-```
-
-After:
-```
-//BenchmarkGlobal/New-8         	 		4168814	       482.0 ns/op	      80 B/op	       2 allocs/op
-//BenchmarkGlobal/ConvertToNum-8         	47283444	   24.13 ns/op	       0 B/op	       0 allocs/op
-//BenchmarkGlobal/ConvertToString-8      	52678071	   23.87 ns/op	       0 B/op	       0 allocs/op
-```
 
 ### Mirrors
 
